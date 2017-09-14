@@ -21,8 +21,8 @@ import java.util.ArrayList;
 
 import cn.cjluzzl.tbt.tbtproject.MainActivity;
 import cn.cjluzzl.tbt.tbtproject.R;
+import cn.cjluzzl.tbt.tbtproject.domain.ArticleJsonData;
 import cn.cjluzzl.tbt.tbtproject.domain.HomeAndAbroadNewsData;
-import cn.cjluzzl.tbt.tbtproject.fragment.HomeFragment;
 import cn.cjluzzl.tbt.tbtproject.view.RefreshListView;
 
 /**
@@ -38,7 +38,9 @@ public class ArticleDetailPager {
     public String url;
     public String moreUrl;
     private RefreshListView lvNews;
-    private ArrayList<String> newsData;
+    private ArticleJsonData newsData;
+    private ArrayList<ArticleJsonData.ArticleDetaileData> mNewsDetailDataList;
+
     private ArticleAdapter mNewsAdapter;
     public ArticleDetailPager(Activity mActivity, String tag,String url){
         this.mActivity = mActivity;
@@ -48,10 +50,10 @@ public class ArticleDetailPager {
     public void initView(){
         mRootView = View.inflate(mActivity, R.layout.pager_common_title, null);
         lvNews = (RefreshListView) mRootView.findViewById(R.id.lv_news);
-        newsData =  new ArrayList<String>();
-        newsData.add("hhhh");
-        newsData.add("asdfsad");
-        newsData.add("hhhhh");
+
+//        newsData.add("hhhh");
+//        newsData.add("asdfsad");
+//        newsData.add("hhhhh");
         mNewsAdapter = new ArticleAdapter();
         lvNews.setAdapter(mNewsAdapter);
     }
@@ -86,7 +88,7 @@ public class ArticleDetailPager {
 
     public void parseData(String result, boolean isMore){
         Gson gson = new Gson();
-        newsData = gson.fromJson(result, HomeAndAbroadNewsData.class);
+        newsData = gson.fromJson(result, ArticleJsonData.class);
         String more = newsData.more;
         if(!TextUtils.isEmpty(more)){
             moreUrl = more;
@@ -99,7 +101,7 @@ public class ArticleDetailPager {
             lvNews.setAdapter(mNewsAdapter);
             mNewsAdapter.notifyDataSetChanged();
         }else{
-            ArrayList<HomeAndAbroadNewsData.ArticleData> tempData = new ArrayList<HomeAndAbroadNewsData.ArticleData>();
+            ArrayList<ArticleJsonData.ArticleDetaileData> tempData = new ArrayList<ArticleJsonData.ArticleDetaileData>();
             tempData = newsData.data;
             mNewsDetailDataList.addAll(tempData);
             mNewsAdapter.notifyDataSetChanged();
@@ -132,12 +134,12 @@ public class ArticleDetailPager {
 
         @Override
         public int getCount() {
-            return newsData.size();
+            return mNewsDetailDataList.size();
         }
 
         @Override
-        public String getItem(int position) {
-            return newsData.get(position);
+        public ArticleJsonData.ArticleDetaileData getItem(int position) {
+            return mNewsDetailDataList.get(position);
         }
 
         @Override
@@ -149,7 +151,7 @@ public class ArticleDetailPager {
         public View getView(int position, View convertView, ViewGroup parent) {
             convertView = View.inflate(mActivity,R.layout.article_simple_item, null);
             TextView textView = (TextView) convertView.findViewById(R.id.tv_title);
-            textView.setText(newsData.get(position));
+            textView.setText(mNewsDetailDataList.get(position).title);
             return convertView;
         }
     }

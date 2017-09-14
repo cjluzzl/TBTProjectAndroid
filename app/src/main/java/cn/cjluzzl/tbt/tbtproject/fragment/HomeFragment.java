@@ -40,11 +40,11 @@ public class HomeFragment extends Fragment {
         titleArrayList.add("基础知识");
         titleArrayList.add("监督评价");
         titleArrayList.add("专家介绍");
-        mPagerList.add(new ArticleDetailPager(getActivity(),"科研成果","http://192.168.23.1:8000/article/"));
-        mPagerList.add(new ArticleDetailPager(getActivity(),"一带一路","http://192.168.23.1:8000/article/"));
-        mPagerList.add(new ArticleDetailPager(getActivity(),"基础知识","http://192.168.23.1:8000/article/"));
-        mPagerList.add(new ArticleDetailPager(getActivity(),"监督评价","http://192.168.23.1:8000/article/"));
-        mPagerList.add(new ArticleDetailPager(getActivity(),"专家介绍","http://192.168.23.1:8000/article/"));
+        mPagerList.add(new ArticleDetailPager(getActivity(),"科研成果","http://192.168.23.1:8000/article/get_article_json/5/1/"));
+        mPagerList.add(new ArticleDetailPager(getActivity(),"一带一路","http://192.168.23.1:8000/article/get_article_json/8/1/"));
+        mPagerList.add(new ArticleDetailPager(getActivity(),"基础知识","http://192.168.23.1:8000/article/get_article_json/12/1/"));
+        mPagerList.add(new ArticleDetailPager(getActivity(),"监督评价","http://192.168.23.1:8000/article/get_article_json/11/1/"));
+        mPagerList.add(new ArticleDetailPager(getActivity(),"专家介绍","http://192.168.23.1:8000/article/get_article_json/15/1/"));
         mTitleIndicator = (TabPageIndicator) view.findViewById(R.id.title_indicator);
         mTitlePagerAdapter = new TitlePagerAdapter();
         pager.setAdapter(mTitlePagerAdapter);
