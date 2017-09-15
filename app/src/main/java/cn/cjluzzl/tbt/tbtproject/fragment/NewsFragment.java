@@ -37,8 +37,8 @@ public class NewsFragment extends Fragment {
         titleArrayList = new ArrayList<String>();
         titleArrayList.add("国内新闻");
         titleArrayList.add("国外新闻");
-        mPagerList.add(new NewsTabDetailPager(getActivity(),"国内新闻","http://192.168.23.1:8000/article/home_news_list/1/"));
-        mPagerList.add(new NewsTabDetailPager(getActivity(),"国外新闻","http://192.168.23.1:8000/article/abroad_news_list/1/"));
+        mPagerList.add(new NewsTabDetailPager(getActivity(),"国内新闻","http://192.168.155.1:8000/article/home_news_list/1/"));
+        mPagerList.add(new NewsTabDetailPager(getActivity(),"国外新闻","http://192.168.155.1:8000/article/abroad_news_list/1/"));
         mTitleIndicator = (TabPageIndicator) view.findViewById(R.id.title_indicator);
         mTitlePagerAdapter = new TitlePagerAdapter();
         pager.setAdapter(mTitlePagerAdapter);

@@ -4,18 +4,10 @@
     android:layout_height="match_parent">
 
     <cn.cjluzzl.tbt.tbtproject.view.RefreshListView
-        android:id="@+id/lv_news"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    android:id="@+id/lv_article"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"/>
 
-    </cn.cjluzzl.tbt.tbtproject.view.RefreshListView>
-    <TextView
-        android:id="@+id/tv_show_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="sss"
-        android:textColor="#f0f"
-        />
 
 </LinearLayout>

@@ -36,14 +36,21 @@
         android:layout_weight="1"
         android:background="@android:color/darker_gray"
         >
-        <TextView
+        <EditText
+            android:id="@+id/tv_test_text"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="#fff"
+            android:padding="5dp"
+
+            />
+        <Button
+            android:id="@+id/btn_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="服务器去约会了，您的消息被带走了"
+            android:text="发送"
+            android:layout_below="@+id/tv_test_text"
             android:textColor="#000"
-            android:textSize="14sp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
             />
     </RelativeLayout>
 

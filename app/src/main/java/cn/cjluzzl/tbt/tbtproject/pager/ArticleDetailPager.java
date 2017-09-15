@@ -5,10 +5,12 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.ResponseInfo;
@@ -39,7 +41,7 @@ public class ArticleDetailPager {
     public String moreUrl;
     private RefreshListView lvNews;
     private ArticleJsonData newsData;
-    private ArrayList<ArticleJsonData.ArticleDetaileData> mNewsDetailDataList;
+    private ArrayList<ArticleJsonData.ArticleDetaileData> mNewsDetailDataList = new ArrayList<>();
 
     private ArticleAdapter mNewsAdapter;
     public ArticleDetailPager(Activity mActivity, String tag,String url){
@@ -49,13 +51,32 @@ public class ArticleDetailPager {
     }
     public void initView(){
         mRootView = View.inflate(mActivity, R.layout.pager_common_title, null);
-        lvNews = (RefreshListView) mRootView.findViewById(R.id.lv_news);
+        lvNews = (RefreshListView) mRootView.findViewById(R.id.lv_article);
 
-//        newsData.add("hhhh");
-//        newsData.add("asdfsad");
-//        newsData.add("hhhhh");
         mNewsAdapter = new ArticleAdapter();
         lvNews.setAdapter(mNewsAdapter);
+
+        getDataFromServer();
+        lvNews.setOnRefreshListener(new RefreshListView.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Toast.makeText(mActivity, "刷新数据接口已经调用，正在刷新数据",Toast.LENGTH_SHORT).show();
+                getDataFromServer();
+                lvNews.onRefreshComplete();
+            }
+
+            @Override
+            public void onLoadMore() {
+                if(moreUrl!=null){
+                    getMoreDataFromServer();
+                    System.out.println("更多内容加载完毕");
+                }else {
+                    Toast.makeText(mActivity,"没有更多内容了",Toast.LENGTH_SHORT).show();
+                    lvNews.onRefreshComplete();
+                }
+            }
+        });
+
     }
     public void initData(){
         System.out.println("初始化了"+tag);
@@ -123,6 +144,7 @@ public class ArticleDetailPager {
             @Override
             public void onFailure(HttpException error, String msg) {
                 Toast.makeText(mActivity,"请求失败",Toast.LENGTH_LONG);
+                System.out.println(tag + "请求失败");
                 error.printStackTrace();
                 System.out.println("更多数据加载失败");
                 lvNews.onRefreshComplete();//收起下拉刷新的view
@@ -131,7 +153,11 @@ public class ArticleDetailPager {
     }
 
     class ArticleAdapter extends BaseAdapter{
-
+        BitmapUtils bitmap;
+        public ArticleAdapter(){
+            bitmap = new BitmapUtils(mActivity);
+            bitmap.configDefaultLoadingImage(R.drawable.show);
+        }
         @Override
         public int getCount() {
             return mNewsDetailDataList.size();
@@ -149,11 +175,44 @@ public class ArticleDetailPager {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = View.inflate(mActivity,R.layout.article_simple_item, null);
-            TextView textView = (TextView) convertView.findViewById(R.id.tv_title);
-            textView.setText(mNewsDetailDataList.get(position).title);
+            final ArticleViewHolder holder;
+            if(convertView == null){
+                holder = new ArticleViewHolder();
+                convertView = View.inflate(mActivity,R.layout.article_simple_item, null);
+
+                holder.ivHead = (ImageView) convertView.findViewById(R.id.iv_article_head_img);
+                //标题
+                holder.tvTitle = (TextView) convertView.findViewById(R.id.tv_article_title);
+                //摘要
+                holder.tvShowContent = (TextView) convertView.findViewById(R.id.tv_article_short_content);
+                //行业
+                holder.tvTrade = (TextView) convertView.findViewById(R.id.tv_article_trade);
+                //发布时间
+                holder.pubTime = (TextView) convertView.findViewById(R.id.tv_article_time);
+                //浏览量
+                holder.tvShowCount = (TextView) convertView.findViewById(R.id.tv_article_show_count);
+                convertView.setTag(holder);
+            }else {
+                holder = (ArticleViewHolder)convertView.getTag();
+            }
+
+            ArticleJsonData.ArticleDetaileData item = mNewsDetailDataList.get(position);
+            holder.tvTitle.setText(item.title);
+            holder.tvShowContent.setText(item.shortContent);
+            holder.tvTrade.setText(item.trade);
+            bitmap.display(holder.ivHead, item.image);
+            holder.pubTime.setText(item.pubTime);
+            holder.tvShowCount.setText(item.showCount);
             return convertView;
         }
+    }
+    static class ArticleViewHolder{
+        public ImageView ivHead;
+        public TextView tvTitle;
+        public TextView tvShowContent;
+        public TextView pubTime;
+        public TextView tvShowCount;
+        public TextView tvTrade;
     }
 
 }
