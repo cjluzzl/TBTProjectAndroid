@@ -10,6 +10,13 @@ import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.baidu.android.pushservice.PushSettings;
 
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft_6455;
+import org.java_websocket.handshake.ServerHandshake;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import cn.cjluzzl.tbt.tbtproject.fragment.HomeFragment;
 import cn.cjluzzl.tbt.tbtproject.fragment.MeFragment;
 import cn.cjluzzl.tbt.tbtproject.fragment.MessageFragment;
@@ -21,19 +28,29 @@ public class MainActivity extends FragmentActivity {
     private final static String TAG_NEWS = "news";
     private final static String TAG_MESSAGE = "message";
     private final static String TAG_ME = "me";
+
     private FragmentTabHost tabhost;
     private TabIndicatorView homeIndicator;
     private TabIndicatorView newsIndicator;
     private TabIndicatorView messageIndicator;
     private TabIndicatorView meIndicator;
+    public URI uri;
+    public WebSocketClient webSocketClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        //初始化百度云推送
         PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY,"gfV4sLlGDlcM86A96rGBOrnT");
         PushSettings.enableDebugMode(getApplicationContext(),true);
+
+        //初始化WebSocket
+        //initSocket();
+
+
+
+
         //1.初始化TabHost
         tabhost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         tabhost.setup(this, getSupportFragmentManager(), R.id.activity_home_container);
@@ -114,4 +131,51 @@ public class MainActivity extends FragmentActivity {
             }
         });
     }
+
+    public void initSocket(){
+        try {
+            uri = new URI("ws://192.168.155.1:8000/users/test/cjluzzl/");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        webSocketClient = new WebSocketClient(uri, new Draft_6455()) {
+            public String res;
+            @Override
+            public void onOpen(ServerHandshake serverHandshake) {
+                System.out.println("webSocketClient的onOpen()方法");
+            }
+
+            @Override
+            public void onMessage(String s) {
+                res = s;
+                System.out.println("接收到的消息是" + s);
+            }
+
+            @Override
+            public void onClose(int i, String s, boolean b) {
+                System.out.println("webSocket方法关闭了i:" + i);
+                System.out.println("webSocket方法关闭了s:" + s);
+                System.out.println("webSocket方法关闭了b:" + b);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                System.out.println("webSocket的onError()");
+            }
+
+            public String getMessage(){
+                return res;
+            }
+        };
+
+
+        try {
+            boolean isConnectBlocking = webSocketClient.connectBlocking();
+            System.out.println("连接锁定状态为:" + isConnectBlocking);
+            webSocketClient.getDraft();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
