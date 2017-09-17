@@ -22,6 +22,7 @@ import cn.cjluzzl.tbt.tbtproject.fragment.MeFragment;
 import cn.cjluzzl.tbt.tbtproject.fragment.MessageFragment;
 import cn.cjluzzl.tbt.tbtproject.fragment.NewsFragment;
 import cn.cjluzzl.tbt.tbtproject.view.TabIndicatorView;
+import cn.cjluzzl.tbt.tbtproject.websocket.MyWebSocket;
 
 public class MainActivity extends FragmentActivity {
     private final static String TAG_HOME = "home";
@@ -35,7 +36,7 @@ public class MainActivity extends FragmentActivity {
     private TabIndicatorView messageIndicator;
     private TabIndicatorView meIndicator;
     public URI uri;
-    public WebSocketClient webSocketClient;
+    public static MyWebSocket webSocketClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class MainActivity extends FragmentActivity {
         PushSettings.enableDebugMode(getApplicationContext(),true);
 
         //初始化WebSocket
-        //initSocket();
+        initSocket();
 
 
 
@@ -132,41 +133,18 @@ public class MainActivity extends FragmentActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
     public void initSocket(){
         try {
             uri = new URI("ws://192.168.155.1:8000/users/test/cjluzzl/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        webSocketClient = new WebSocketClient(uri, new Draft_6455()) {
-            public String res;
-            @Override
-            public void onOpen(ServerHandshake serverHandshake) {
-                System.out.println("webSocketClient的onOpen()方法");
-            }
-
-            @Override
-            public void onMessage(String s) {
-                res = s;
-                System.out.println("接收到的消息是" + s);
-            }
-
-            @Override
-            public void onClose(int i, String s, boolean b) {
-                System.out.println("webSocket方法关闭了i:" + i);
-                System.out.println("webSocket方法关闭了s:" + s);
-                System.out.println("webSocket方法关闭了b:" + b);
-            }
-
-            @Override
-            public void onError(Exception e) {
-                System.out.println("webSocket的onError()");
-            }
-
-            public String getMessage(){
-                return res;
-            }
-        };
+        webSocketClient = new MyWebSocket(uri, new Draft_6455());
 
 
         try {
@@ -176,6 +154,10 @@ public class MainActivity extends FragmentActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    public static MyWebSocket getWebSocketClient(){
+
+        return webSocketClient;
     }
 
 }

@@ -14,7 +14,7 @@ import java.net.URI;
 
 public class MyWebSocket extends WebSocketClient {
 
-
+    private String res;
     public MyWebSocket(URI serverUri, Draft protocolDraft) {
         super(serverUri, protocolDraft);
     }
@@ -27,6 +27,8 @@ public class MyWebSocket extends WebSocketClient {
     @Override
     public void onMessage(String s) {
         System.out.println("接收到的消息是" + s);
+        res = s;
+        System.out.println("res=" + s + "赋值成功");
     }
 
     @Override
@@ -39,5 +41,10 @@ public class MyWebSocket extends WebSocketClient {
     @Override
     public void onError(Exception e) {
         System.out.println("webSocket的onError()");
+    }
+
+    public String getMessage(){
+
+        return this.res;
     }
 }
