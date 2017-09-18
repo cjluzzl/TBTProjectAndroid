@@ -42,7 +42,9 @@
             </intent-filter>
 
         </activity>
+        <activity android:name=".activity.ArticleDetailActivity">
 
+        </activity>
         <service android:name=".service.FirstService">
 
 

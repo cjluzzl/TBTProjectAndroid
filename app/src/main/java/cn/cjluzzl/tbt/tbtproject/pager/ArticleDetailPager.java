@@ -1,9 +1,11 @@
 package cn.cjluzzl.tbt.tbtproject.pager;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 
 import cn.cjluzzl.tbt.tbtproject.MainActivity;
 import cn.cjluzzl.tbt.tbtproject.R;
+import cn.cjluzzl.tbt.tbtproject.activity.ArticleDetailActivity;
 import cn.cjluzzl.tbt.tbtproject.domain.ArticleJsonData;
 import cn.cjluzzl.tbt.tbtproject.domain.HomeAndAbroadNewsData;
 import cn.cjluzzl.tbt.tbtproject.view.RefreshListView;
@@ -102,6 +105,18 @@ public class ArticleDetailPager {
                 Toast.makeText(mActivity, "刷新失败，请检查网络连接",Toast.LENGTH_SHORT).show();
                 //收起下拉刷新效果
                 lvNews.onRefreshComplete();
+            }
+        });
+        lvNews.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                System.out.println("你点击了第" + position);
+                Intent intent = new Intent();
+
+                intent.setClass(mActivity, ArticleDetailActivity.class);
+                intent.putExtra("url", mNewsDetailDataList.get(position-1).url);
+                intent.putExtra("title", mNewsDetailDataList.get(position-1).title);
+                mActivity.startActivity(intent);
             }
         });
     }
