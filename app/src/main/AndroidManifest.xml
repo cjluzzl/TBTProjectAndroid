@@ -43,6 +43,10 @@
 
         </activity>
 
+        <service android:name=".service.FirstService">
+
+
+        </service>
         <!-- 此处Receiver名字修改为当前包名路径 -->
         <receiver android:name=".PushTestReceiver">
             <intent-filter>
