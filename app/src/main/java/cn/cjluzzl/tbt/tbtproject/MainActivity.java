@@ -47,7 +47,7 @@ public class MainActivity extends FragmentActivity {
         PushSettings.enableDebugMode(getApplicationContext(),true);
 
         //初始化WebSocket
-        initSocket();
+        //initSocket();
 
 
 

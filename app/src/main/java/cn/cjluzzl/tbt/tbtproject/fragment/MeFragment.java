@@ -1,7 +1,12 @@
 package cn.cjluzzl.tbt.tbtproject.fragment;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import cn.cjluzzl.tbt.tbtproject.R;
+import cn.cjluzzl.tbt.tbtproject.activity.LoginActivity;
+import cn.cjluzzl.tbt.tbtproject.activity.PersonalInfomationActivity;
 
 /**
  * Created by
@@ -23,8 +30,15 @@ import cn.cjluzzl.tbt.tbtproject.R;
 
 public class MeFragment extends Fragment {
     ListView lvFun;
+    TextView tvUserName;
     Button btnPersonalInfo;
+    Button btnLogin;
+    Button btnRegister;
+    Button btnLogout;
+    SharedPreferences sp;
+    String userName;
     SettingAdapter mSettingAdapter = new SettingAdapter();
+    Activity mActivity;
     public String[] funName = {
             "浏览记录","关注的标签","会员购买","软件更新","缓存清理"
     };
@@ -33,14 +47,60 @@ public class MeFragment extends Fragment {
             R.drawable.icon_vip, R.drawable.icon_update,
             R.drawable.icon_clear
     };
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        System.out.println("onActivityResult");
+        if(requestCode == 200 && resultCode == 200){
+            System.out.println("登录成功并返回页面");
+            btnLogin.setVisibility(View.INVISIBLE);
+        }
+        if(requestCode == 200 && resultCode == 100){
+            System.out.println("登录失败并返回页面");
+            btnLogin.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mActivity = getActivity();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_me, container, false);
+        tvUserName = (TextView) view.findViewById(R.id.tv_me_username);
         btnPersonalInfo = (Button) view.findViewById(R.id.btn_me_info);
+        btnLogin = (Button) view.findViewById(R.id.btn_me_login);
+        btnLogout = (Button) view.findViewById(R.id.btn_me_logout);
+        btnRegister = (Button) view.findViewById(R.id.btn_me_register);
+        sp = getActivity().getSharedPreferences("user_info", Context.MODE_PRIVATE);
+        userName = sp.getString("username","");
+        if(!TextUtils.isEmpty(userName)){
+            btnLogin.setVisibility(View.INVISIBLE);
+            btnRegister.setVisibility(View.INVISIBLE);
+            tvUserName.setText(userName);
+        }else {
+            btnPersonalInfo.setVisibility(View.INVISIBLE);
+        }
+
         btnPersonalInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "你点击了个人资料按键", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.setClass(mActivity, PersonalInfomationActivity.class);
+                mActivity.startActivity(intent);
+            }
+        });
+
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(mActivity, LoginActivity.class);
+                mActivity.startActivityForResult(intent,200);
+
             }
         });
 

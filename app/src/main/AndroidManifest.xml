@@ -45,6 +45,16 @@
         <activity android:name=".activity.ArticleDetailActivity">
 
         </activity>
+
+        <activity android:name=".activity.PersonalInfomationActivity">
+
+        </activity>
+        <activity android:name=".activity.LoginActivity">
+
+        </activity>
+        <activity android:name=".activity.RegisterActivity">
+
+        </activity>
         <service android:name=".service.FirstService">
 
 
