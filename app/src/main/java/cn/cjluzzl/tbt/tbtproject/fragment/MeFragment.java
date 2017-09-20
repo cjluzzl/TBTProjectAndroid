@@ -21,6 +21,7 @@ import android.widget.Toast;
 import cn.cjluzzl.tbt.tbtproject.R;
 import cn.cjluzzl.tbt.tbtproject.activity.LoginActivity;
 import cn.cjluzzl.tbt.tbtproject.activity.PersonalInfomationActivity;
+import cn.cjluzzl.tbt.tbtproject.activity.RegisterActivity;
 
 /**
  * Created by
@@ -103,7 +104,14 @@ public class MeFragment extends Fragment {
 
             }
         });
-
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(mActivity, RegisterActivity.class);
+                mActivity.startActivity(intent);
+            }
+        });
         lvFun = (ListView) view.findViewById(R.id.lv_me_fun);
 
         lvFun.setOnItemClickListener(new AdapterView.OnItemClickListener() {
